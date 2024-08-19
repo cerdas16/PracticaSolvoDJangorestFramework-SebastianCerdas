@@ -15,10 +15,15 @@
              <div class="col-sm-4">
             </div>
             <div class="col-sm-4">
-                <h2>Validate credentials.</h2>
+                <h1>Validate credentials.</h1>
                 <br>
                 <form method="post" action="{% url 'cash_withdrawal' %}">
-                    <h4>Yo have a tanto money in this account.</h4>
+                    {% csrf_token %}
+                    {% for accounts in account %}
+                            <h5>You have a {{ accounts.bank_fund }} money in this account.</h5>
+                        {% empty %}
+                            No accounts found.
+                    {% endfor %}
                     <br>
                     <br>
                     <label>How much money do you want to withdraw?</label>
