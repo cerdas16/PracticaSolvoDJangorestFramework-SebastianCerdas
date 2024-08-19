@@ -17,3 +17,9 @@ class office_user(models.Model):
 
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=50)
+
+class binnacle(models.Model):
+
+    account = models.ForeignKey(account, on_delete=models.CASCADE)
+    withdrawal_amount = models.CharField(max_length=20)
+    password = models.CharField(max_length=50)

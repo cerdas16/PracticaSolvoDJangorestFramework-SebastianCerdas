@@ -1,7 +1,8 @@
 from django.urls import path
-
-from ATM import views
+from .views import verify_user, cash_withdrawal, index
 
 urlpatterns = [
-    path('', views.index, name="home"),
+    path('', index, name="home"),
+    path('/verify_user', verify_user, name="verify_user"),
+    path('/cash_withdrawal', cash_withdrawal, name="cash_withdrawal"),
 ]

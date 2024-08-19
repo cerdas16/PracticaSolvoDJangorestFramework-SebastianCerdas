@@ -1,17 +1,38 @@
-{% extends 'gentelella/base.html %}
-{% block title %} Bank {% endblock %}
-{% block extra_css %}
+{% extends 'ATM/base.html' %}
+{% block title %} {% endblock %}
+
+
+{% block prehead %}
+
 {% endblock %}
 
+    {% block content %}
 
-{% block content_block_wrap %}
-    <div>
-        <div>
-            {% block content %}
-            {% endblock content %}
+    <div class="container">
+        <h1 class="text-center ">BANK</h1>
+
+        <div class="row">
+             <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
+                <h2>Validate credentials.</h2>
+                {{message}}
+                <br>
+                <form method="post" action="{% url 'verify_user' %}">
+                    <label>username</label>
+                    <input type="text" class="form-control" name="username" id="username">
+                    <br>
+                    <label>password</label>
+                    <input type="text" class="form-control" name="password" id="password">
+                    <button class="my-4 float-end btn btn-primary" type="submit">Verify</button>
+                </form>
+            </div>
+             <div class="col-sm-4">
+            </div>
+
         </div>
-    </div>
-{% endblock %}
 
-{% block javascript %}
-{% endblock %}
+    </div>
+
+
+    {% endblock content %}
