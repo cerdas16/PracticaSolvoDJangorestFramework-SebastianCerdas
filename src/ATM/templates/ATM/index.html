@@ -1,13 +1,17 @@
+{% extends 'gentelella/base.html %}
+{% block title %} Bank {% endblock %}
+{% block extra_css %}
+{% endblock %}
 
-    {% extends 'gentelella/base.html' %}
-<head>
 
-{% block content %}
-    <h1>Bienvenido al Panel de Administración</h1>
-    HOLA MUNDO
-{% endblock %}X
-</head>
-<body>
+{% block content_block_wrap %}
+    <div>
+        <div>
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+{% endblock %}
 
-</body>
-</html>
+{% block javascript %}
+{% endblock %}

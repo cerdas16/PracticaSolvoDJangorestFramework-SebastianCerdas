@@ -16,8 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from djgentelella.urls import urlpatterns as urls_djgentelella
 
-urlpatterns = [
+urlpatterns = urls_djgentelella + [
     path('admin/', admin.site.urls),
     path('ATM/', include("ATM.urls")),
 ]
