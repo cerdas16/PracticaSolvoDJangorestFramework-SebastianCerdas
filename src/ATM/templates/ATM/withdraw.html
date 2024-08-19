@@ -1,0 +1,50 @@
+{% extends 'ATM/base.html' %}
+{% block title %} {% endblock %}
+
+
+{% block prehead %}
+
+{% endblock %}
+
+    {% block content %}
+
+    <div class="container">
+        <h1 class="text-center ">{{hello}}</h1>
+
+        <div class="row">
+             <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
+                <h2>Validate credentials.</h2>
+                <br>
+                <form method="post" action="{% url 'cash_withdrawal' %}">
+                    <h4>Yo have a tanto money in this account.</h4>
+                    <br>
+                    <br>
+                    <label>How much money do you want to withdraw?</label>
+                    <br>
+                    <input type="number" class="form-control" name="withdrawal_amount" id="withdrawal_amount">
+                    <br>
+                    <label>Enter your card pin</label>
+                    <br>
+                    <input type="text" class="form-control" name="card_pin" id="card_pin">
+                    <button class="my-4 float-end btn btn-primary" type="submit">withdraw</button>
+                </form>
+            </div>
+             <div class="col-sm-4">
+            </div>
+
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
+
+            </div>
+             <div class="col-sm-4">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% endblock content %}

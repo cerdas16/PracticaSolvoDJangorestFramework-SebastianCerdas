@@ -20,5 +20,5 @@ from djgentelella.urls import urlpatterns as urls_djgentelella
 
 urlpatterns = urls_djgentelella + [
     path('admin/', admin.site.urls),
-    path('ATM/', include("ATM.urls")),
+    path('', include("ATM.urls")),
 ]
