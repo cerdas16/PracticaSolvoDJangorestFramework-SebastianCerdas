@@ -21,6 +21,7 @@
                     {% csrf_token %}
                     {% for accounts in account %}
                             <h5>You have a {{ accounts.bank_fund }} money in this account.</h5>
+                            <input type="hidden" class="form-control" name="account_id" id="account_id" value="{{accounts.id}}">
                         {% empty %}
                             No accounts found.
                     {% endfor %}
@@ -35,6 +36,17 @@
                     <input type="text" class="form-control" name="card_pin" id="card_pin">
                     <button class="my-4 float-end btn btn-primary" type="submit">withdraw</button>
                 </form>
+
+                <ul>
+                    {% for denomination, count in bills_distribution.items %}
+                        <li>Billetes de {{ denomination }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+
+                {% if 'remaining' in bills_distribution %}
+                    <p>Parte restante que no pudo ser dividida: {{ bills_distribution.remaining }}</p>
+                {% endif %}
+
             </div>
              <div class="col-sm-4">
             </div>
