@@ -21,7 +21,7 @@
                         {{message}}
                         <br>
                         <br>
-                        <form method="post" action="{% url 'verify_user' %}">
+                        <form method="post" action="{% url 'verify_office_user' %}">
                             {% csrf_token %}
                             <label>username</label>
                             <input type="text" class="form-control" name="username" id="username">

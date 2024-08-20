@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from .models import Client, Account, Binnacle
+from django.shortcuts import render, redirect
+from .forms import Client_Registration_Form
+from .models import Client, Account, Binnacle, Office_User
 from django.contrib.auth.hashers import check_password
 from decimal import Decimal
 
@@ -15,8 +16,7 @@ def index_admin(request):
     context = {
         'hello':'Hola Mundo',
     }
-    return render(request, 'ATM/index_admin.html', context)
-
+    return render(request, 'ATM/Office_User/index_admin.html', context)
 
 def verify_user(request):
     if request.method == 'POST':
@@ -41,8 +41,29 @@ def verify_user(request):
             }
             return render(request, 'ATM/index.html', context)
 
+def verify_office_user(request):
 
+    if request.method == 'POST':
+        try:
+            office_user_consulted = Office_User.objects.get(user__username=request.POST.get('username'))
 
+            if check_password(request.POST.get('password'), office_user_consulted.user.password):
+                clients = Client.objects.all()
+                context = {
+                    'message': 'Welcome client, We were waiting for you!',
+                    'clients': clients
+                }
+                return render(request, 'ATM/Office_User/dashboard.html', context)
+            else:
+                context = {
+                    'message': 'Verify your credentials.',
+                }
+                return render(request, 'ATM/Office_User/index_admin.html', context)
+        except Client.DoesNotExist:
+            context = {
+                'message': 'This user does not exist.',
+            }
+            return render(request, 'ATM/Office_User/index_admin.html', context)
 
 def cash_withdrawal(request):
     print(f"hola")
@@ -93,3 +114,12 @@ def cash_withdrawal(request):
                 'message': 'This account does not exist.',
             }
             return render(request, 'ATM/index.html', context)
+
+
+def register_client(request):
+    if request.method == 'POST':
+        form = Client_Registration_Form(request.POST)
+        if form.is_valid():
+            user = form.save()
+            Client.objects.create(user=user)
+            return redirect('')
