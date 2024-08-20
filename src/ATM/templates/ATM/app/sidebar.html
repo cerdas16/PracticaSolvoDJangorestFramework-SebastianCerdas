@@ -1,0 +1,35 @@
+{% load gentelellamenu gtsettings %}
+<div class="left_col overflow-hidden">
+  <div class="navbar nav_title" style="border: 0;">
+    <a href="{% url 'home' %}" class="site_title"><i class="{% get_settings 'sidebar_icon' 'fa fa-spinner' %}"></i> <span>{% get_settings 'sidebar_title' 'My Site' %}</span></a>
+  </div>
+
+
+ <div class="clearfix"></div>
+
+  <!-- sidebar menu -->
+
+  <div id="sidebar-menu" class="main_menu_side d-print-none main_menu">
+
+      <div class="menu_section">
+            <ul class="nav side-menu">
+                    <li class="menu-title">Main Menu</li>
+                    <li>
+                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-exchange"></i>Clients</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'index_admin' %}"><i class="menu-icon fa fa-user-circle"></i>Admin</a>
+                    </li>
+            </ul>
+        </div>
+
+  </div>
+  <!-- /sidebar menu -->
+
+  <!-- /menu footer buttons -->
+  <div class="sidebar-footer d-print-none nohidden">
+     {% footer_sidebar_menu %}
+  </div>
+  <!-- /menu footer buttons -->
+</div>
+
