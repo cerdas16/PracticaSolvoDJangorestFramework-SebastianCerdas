@@ -23,7 +23,7 @@
                             <h5>You have a {{ accounts.bank_fund }} money in this account.</h5>
                             <input type="hidden" class="form-control" name="account_id" id="account_id" value="{{accounts.id}}">
                         {% empty %}
-                            No accounts found.
+                            {{message}}
                     {% endfor %}
                     <br>
                     <br>
