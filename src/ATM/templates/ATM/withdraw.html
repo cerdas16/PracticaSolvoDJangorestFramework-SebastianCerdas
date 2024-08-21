@@ -37,11 +37,16 @@
                     <button class="my-4 float-end btn btn-primary" type="submit">withdraw</button>
                 </form>
 
-                <ul>
-                    {% for denomination, count in bills_distribution.items %}
-                        <li>Billetes de {{ denomination }}: {{ count }}</li>
-                    {% endfor %}
-                </ul>
+                {%if bills_distribution %}
+                    <ul> <li>Su dinero es
+                        {% for denomination, count in bills_distribution.items %}
+                            {{ count }} billetes de {{ denomination }},
+                        {% endfor %}
+                        </li>
+                    </ul>
+                {% else %}
+                    <p>We are attentive to your request.</p>
+                {% endif %}
 
                 {% if 'remaining' in bills_distribution %}
                     <p>Parte restante que no pudo ser dividida: {{ bills_distribution.remaining }}</p>
