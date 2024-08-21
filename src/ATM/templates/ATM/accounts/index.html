@@ -10,34 +10,34 @@
 
     <div class="container">
 
-        <a class="btn btn-secondary" href="{% url 'index_accounts' %}">Manage Accounts</a>
+        <a class="btn btn-secondary" href="{% url 'index_clients' %}">Manage Accounts</a>
 
-        <h1>Manage Registered Clients</h1>
+        <h1>Manage Accounts of Clients</h1>
 
         {{ exist }}
 
-        <button class="btn btn-success bt-xs float-end my-5" data-toggle="modal" data-target="#create_new_client">Register New Account</button>
+        <button class="btn btn-success bt-xs float-end my-5" data-toggle="modal" data-target="#create_new_account">Register New Account </button>
 
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Username</th>
-                    <th>Name Client</th>
+                    <th>Client Name</th>
+                    <th>Bank Fund</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
 
-                {% for client in clients %}
+                {% for account in accounts %}
                     <tr>
-                        <td>{{client.user.id}}</td>
-                        <td>{{client.user.username}}</td>
-                        <td>{{client.name}}</td>
+                        <td>{{account.id}}</td>
+                        <td>{{account.client.name}}</td>
+                        <td>{{account.bank_fund}}</td>
                         <td>
-                            <button type="button" class="btn btn-info text-white btn-xs" data-toggle="modal" data-target="#view_client{{client.user.id}}">View</button>
-                            <!-- Modal View Client -->
-                                <div id="view_client{{client.user.id}}" class="modal fade" tabindex="-1" role="dialog">
+                            <button type="button" class="btn btn-info text-white btn-xs" data-toggle="modal" data-target="#view_account{{account.id}}">View</button>
+                            <!-- Modal View Account -->
+                                <div id="view_account{{account.id}}" class="modal fade" tabindex="-1" role="dialog">
                                   <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                       <div class="modal-header">
@@ -50,11 +50,15 @@
                                           <form>
                                             <div class="form-group">
                                                 <label>Username</label>
-                                                <input type="text" class="form-control" id="username" value="{{client.user.username}}" placeholder="Enter text"disabled>
+                                                <input type="text" class="form-control" id="name" value="{{account.client.name}}" placeholder="Enter text"disabled>
                                             </div>
                                               <div class="form-group">
                                                 <label>Name Client</label>
-                                                <input type="text" class="form-control" id="name" value="{{client.name}}" placeholder="Enter text" disabled>
+                                                <input type="text" class="form-control" id="bank_fund" value="{{account.bank_fund}}" placeholder="Enter text" disabled>
+                                            </div>
+                                              <div class="form-group">
+                                                <label>Name Client</label>
+                                                <input type="text" class="form-control" id="card_pin" value="{{account.card_pin}}" placeholder="Enter text" disabled>
                                             </div>
                                           </form>
                                       </div>
@@ -64,6 +68,7 @@
                                     </div>
                                   </div>
                                 </div>
+
 
                             <button type="button" class="btn btn-warning text-white btn-xs" data-toggle="modal" data-target="#edit_client{{client.user.id}}">Edit</button>
                             <!-- Modal Edit Client -->
@@ -76,7 +81,7 @@
                                           <span aria-hidden="true">&times;</span>
                                         </button>
                                       </div>
-                                        <form method="post" action="{% url 'edit_client' client.user.id %}" id="edit_client_form">
+                                        <form method="post" action="" id="edit_client_form">
                                           <div class="modal-body">
                                               {% csrf_token %}
                                               {{ edit_form }}
@@ -101,7 +106,7 @@
                                           <span aria-hidden="true">&times;</span>
                                         </button>
                                       </div>
-                                        <form method="post" action="{% url 'delete_client' client.id %}">
+                                        <form method="post" action="">
                                             {% csrf_token %}
                                             <div class="modal-body">
                                                 <p>want to delete this client?</p>
@@ -126,8 +131,8 @@
         </table>
     </div>
 
-<!-- Modal View Client -->
- <div id="create_new_client" class="modal fade" tabindex="-1" role="dialog">
+<!-- Modal New Account -->
+ <div id="create_new_account" class="modal fade" tabindex="-1" role="dialog">
      <div class="modal-dialog" role="document">
          <div class="modal-content">
              <div class="modal-header">
@@ -136,7 +141,7 @@
                      <span aria-hidden="true">&times;</span>
                  </button>
              </div>
-             <form method="post" action="{% url 'register_client' %}" id="client_form">
+             <form method="post" action="{% url 'register_account' %}" id="account_form">
                  <div class="modal-body">
                      {% csrf_token %}
                      {{ form }}
