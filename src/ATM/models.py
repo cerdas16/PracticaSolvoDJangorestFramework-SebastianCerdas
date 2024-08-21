@@ -25,6 +25,9 @@ class Office_User(models.Model):
     def __str__(self):
         return self.user.username
 
+    class Meta:
+        permissions = [('can_manage_clients', 'Can manage clients')]
+
 class Binnacle(models.Model):
 
     timestamp = models.DateTimeField(default=timezone.now)

@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/ATM/Office_User/index_admin/'
 
 # Application definition
 
