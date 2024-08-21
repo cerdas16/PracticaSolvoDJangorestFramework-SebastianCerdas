@@ -61,3 +61,18 @@ class Account_Form(forms.ModelForm):
                 'placeholder': 'Enter 4-digit PIN'
             })
         }
+
+class Edit_Account_Form(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['bank_fund', 'card_pin']
+        widgets = {
+            'bank_fund': gentelella_widgets.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter bank fund amount'
+            }),
+            'card_pin': gentelella_widgets.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter 4-digit PIN'
+            })
+        }
