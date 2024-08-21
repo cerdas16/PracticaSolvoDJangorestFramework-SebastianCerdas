@@ -49,9 +49,11 @@ def verify_office_user(request):
 
             if check_password(request.POST.get('password'), office_user_consulted.user.password):
                 clients = Client.objects.all()
+                form = Client_Registration_Form(request.POST)
                 context = {
                     'message': 'Welcome client, We were waiting for you!',
-                    'clients': clients
+                    'clients': clients,
+                    'form': form
                 }
                 return render(request, 'ATM/Office_User/dashboard.html', context)
             else:

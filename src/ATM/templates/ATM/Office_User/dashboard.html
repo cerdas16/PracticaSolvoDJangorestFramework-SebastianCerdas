@@ -11,9 +11,9 @@
     <div class="container">
         <h1>Manage Registered Clients</h1>
 
-        <a class="btn btn-success float-end my-5">Register New Client</a>
+        <button class="btn btn-success bt-xs float-end my-5" data-toggle="modal" data-target="#create_new_client">Register New Client</button>
 
-        <table  id="sustancetable" class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
@@ -30,9 +30,71 @@
                         <td>{{client.user.username}}</td>
                         <td>{{client.name}}</td>
                         <td>
-                            <a href="#" class="btn btn-info btn-xs">Ver</a>
-                            <a href="#" class="btn btn-warning btn-xs">Editar</a>
-                            <a href="#" class="btn btn-danger btn-xs">Eliminar</a>
+                            <button type="button" class="btn btn-info text-white btn-xs" data-toggle="modal" data-target="#view_client">View</button>
+                            <!-- Modal View Client -->
+                                <div id="view_client" class="modal fade" tabindex="-1" role="dialog">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title">Título del Modal</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p>Contenido del modal.</p>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                            <button type="button" class="btn btn-warning text-white btn-xs" data-toggle="modal" data-target="#edit_client">Edit</button>
+                            <!-- Modal Edit Client -->
+                                <div id="edit_client" class="modal fade" tabindex="-1" role="dialog">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title">Título del Modal</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p>Contenido del modal.</p>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                            <button type="button" class="btn btn-danger text-white btn-xs" data-toggle="modal" data-target="#delete_client">Delete</button>
+                            <!-- Modal Delete Client -->
+                                <div id="delete_client" class="modal fade" tabindex="-1" role="dialog">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title">Delete this Client</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <p>want to delete this client?</p>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger">Delete</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -44,25 +106,32 @@
         </table>
     </div>
 
+<!-- Modal View Client -->
+ <div id="create_new_client" class="modal fade" tabindex="-1" role="dialog">
+     <div class="modal-dialog" role="document">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title">Register new Client</h5>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>
+             </div>
+             <div class="modal-body">
+                 {{ form }}
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                 <button type="button" class="btn btn-primary">Guardar Cambios</button>
+             </div>
+         </div>
+     </div>
+ </div>
+
+
     {% endblock content %}
 
 {% block js %}
 {{block.super}}
-
-<script>
-
-(function(){
-    $("#sustancetable").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": "{% url 'laboratory:sustance_list_json' org_pk laboratory %}",
-        "language": {
-            "url": "{% get_datatables_translation %}"
-        }
-    });
-})(jQuery);
-</script>
-
 
 
 {% endblock %}
