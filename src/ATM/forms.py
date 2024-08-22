@@ -1,13 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from djgentelella.forms.forms import GTForm
+
 from .models import Client, Account
 from djgentelella.widgets import core as gentelella_widgets
 from django.core.exceptions import ValidationError
 
-class Client_Registration_Form(UserCreationForm):
+class Client_Registration_Form(GTForm, UserCreationForm):
 
-    name = forms.CharField(widget=gentelella_widgets.TextInput, label='Enter the name of the client, please.' , max_length=100, required=True)
+    name = forms.CharField(widget=gentelella_widgets.TextInput, label='Client name', help_text='Enter the name of the client, please.', max_length=100, required=True)
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']

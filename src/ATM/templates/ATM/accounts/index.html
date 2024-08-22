@@ -94,9 +94,9 @@
                                   </div>
                                 </div>
 
-                            <button type="button" class="btn btn-danger text-white btn-xs" data-toggle="modal" data-target="#delete_client{{client.user.id}}">Delete</button>
+                            <button type="button" class="btn btn-danger text-white btn-xs" data-toggle="modal" data-target="#delete_account{{account.id}}">Delete</button>
                             <!-- Modal Delete Client -->
-                                <div id="delete_client{{client.user.id}}" class="modal fade" tabindex="-1" role="dialog">
+                                <div id="delete_account{{account.id}}" class="modal fade" tabindex="-1" role="dialog">
                                   <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                       <div class="modal-header">
@@ -105,7 +105,7 @@
                                           <span aria-hidden="true">&times;</span>
                                         </button>
                                       </div>
-                                        <form method="post" action="">
+                                        <form method="post" action="{% url 'delete_account' account.id %}">
                                             {% csrf_token %}
                                             <div class="modal-body">
                                                 <p>want to delete this client?</p>
