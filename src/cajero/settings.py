@@ -25,8 +25,30 @@ SECRET_KEY = 'django-insecure-in-qzxc4yiq32b6z82zfog-+ilo$v77ico$4hf$uefbby&y_fi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/ATM/Office_User/index_admin/'
 
 # Application definition
 

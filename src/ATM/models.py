@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your models here.
 
+
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -24,6 +25,9 @@ class Office_User(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    class Meta:
+        permissions = [('can_manage_clients', 'Can manage clients')]
 
 class Binnacle(models.Model):
 

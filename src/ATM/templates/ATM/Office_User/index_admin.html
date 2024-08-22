@@ -23,11 +23,7 @@
                         <br>
                         <form method="post" action="{% url 'verify_office_user' %}">
                             {% csrf_token %}
-                            <label>username</label>
-                            <input type="text" class="form-control" name="username" id="username">
-                            <br>
-                            <label>password</label>
-                            <input type="password" class="form-control" name="password" id="password">
+                            {{ form }}
                             <button class="my-4 float-end btn btn-primary" type="submit">Verify</button>
                         </form>
                     </div>
