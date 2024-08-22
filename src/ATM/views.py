@@ -1,20 +1,22 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import Client_Registration_Form, Custom_Authentication_Form, Delete_Confirmation_Form, Account_Form, Edit_Account_Form
-from .models import Client, Account, Binnacle, Office_User
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required, permission_required
-from decimal import Decimal
-from ATM.utils import log_to_binnacle
 import logging
+from decimal import Decimal
+
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404
+
+from ATM.utils import log_to_binnacle
+from .forms import Client_Registration_Form, Custom_Authentication_Form, Account_Form, Edit_Account_Form
+from .models import Client, Account, Binnacle, Office_User
 
 logger = logging.getLogger(__name__)
 # Create your views here.
 
 def index(request):
+    form = Custom_Authentication_Form()
     if request.method == 'POST':
-        form = Custom_Authentication_Form(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -23,25 +25,21 @@ def index(request):
                 login(request, user)
                 return redirect('ATM/withdraw.html')
     else:
-        form = Custom_Authentication_Form()
-
-    return render(request, 'ATM/index.html', {'form': form})
-
+        return render(request, 'ATM/index.html', {'form': form})
 
 def index_admin(request):
+    form = Custom_Authentication_Form()
     if request.method == 'POST':
-        form = Custom_Authentication_Form(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('ATM/Office_User/dashboard.html')
+                return redirect('register_client')
     else:
-        form = Custom_Authentication_Form()
 
-    return render(request, 'ATM/Office_User/index_admin.html', {'form': form})
+        return render(request, 'ATM/Office_User/index_admin.html', {'form': form})
 
 def index_accounts(request):
 
@@ -50,12 +48,13 @@ def index_accounts(request):
 
     return render(request, 'ATM/accounts/index.html', {'accounts': accounts, 'form':form })
 
+@permission_required('ATM.can_manage_clients')
 def index_logs(request):
+    if not request.user.has_perm('ATM.can_manage_clients'):
+        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
 
     logs = Binnacle.objects.all()
-
     return render(request, 'ATM/binnacle/index.html', {'logs': logs })
-
 
 def index_clients(request):
 
@@ -64,65 +63,49 @@ def index_clients(request):
 
     return render(request, 'ATM/Office_User/dashboard.html', {'clients': clients, 'form':form})
 
-@permission_required('ATM.can_manage_clients', raise_exception=True)
 def verify_user(request):
     if request.method == 'POST':
         try:
-            client_consulted = Client.objects.get(user__username=request.POST.get('username'))
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(username=username, password=password)
 
-            if check_password(request.POST.get('password'), client_consulted.user.password):
+            if user is not None:
+
+                client_consulted = Client.objects.get(user__username=username)
                 accounts = Account.objects.filter(client=client_consulted)
-                log_to_binnacle("User Verified", f"Client {client_consulted.user.username} authenticated successfully")
-                context = {
-                    'message': 'Welcome client, We were waiting for you!',
-                    'account': accounts
-                }
-                return render(request, 'ATM/withdraw.html', context)
-            else:
-                log_to_binnacle("Failed Login", f"Client {request.POST.get('username')} does not exist")
-                context = {
-                    'message': 'Verify your credentials.',
-                }
-                return render(request, 'ATM/index.html', context)
-        except Client.DoesNotExist:
-            log_to_binnacle("Failed Login", f"Client {request.POST.get('username')} This user does not exist.")
-            form = Custom_Authentication_Form(request, data=request.POST)
-            context = {
-                'message': 'This user does not exist.',
-                'form': form,
-            }
-            return render(request, 'ATM/index.html', context)
+                log_to_binnacle("User Verified", f"Client {user.client.name} authenticated successfully")
+                return render(request, 'ATM/withdraw.html', {'message': 'Welcome client, We were waiting for you!','account': accounts})
 
+            else:
+
+                log_to_binnacle("Failed Login", f"Client {request.POST.get('username')} does not exist")
+                return render(request, 'ATM/index.html', {'message': 'Verify your credentials.'})
+
+        except Client.DoesNotExist:
+            redirect('home')
 
 def verify_office_user(request):
 
+    form = Custom_Authentication_Form()
+
     if request.method == 'POST':
+
         try:
-            office_user_consulted = Office_User.objects.get(user__username=request.POST.get('username'))
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(username=username, password=password)
 
-            if check_password(request.POST.get('password'), office_user_consulted.user.password):
-                clients = Client.objects.all()
-                form = Client_Registration_Form(request.POST)
-                context = {
-                    'message': 'Welcome client, We were waiting for you!',
-                    'clients': clients,
-                    'form': form
-                }
-                return render(request, 'ATM/Office_User/dashboard.html', context)
+            if user is not None:
+                log_to_binnacle("User Verified", f"Office_User {user.username} authenticated successfully")
+                return redirect('index_clients')
             else:
-                context = {
-                    'message': 'Verify your credentials.',
-                }
-                return render(request, 'ATM/Office_User/index_admin.html', context)
-        except Office_User.DoesNotExist:
-            form = Custom_Authentication_Form(request, data=request.POST)
-            context = {
-                'message': 'This user does not exist.',
-                'form': form,
-            }
-            return render(request, 'ATM/Office_User/index_admin.html', context)
 
-from decimal import Decimal
+                log_to_binnacle("Failed Login", f"Office_User {username} or {password} is incorrect or no exist")
+                return render(request, 'ATM/Office_User/index_admin.html', {'message': 'This user does not exist.', 'form': form })
+
+        except Office_User.DoesNotExist:
+            return redirect('index_admin')
 
 def cash_withdrawal(request):
     if request.method == 'POST':
@@ -132,7 +115,6 @@ def cash_withdrawal(request):
             denominations = []
             bills_distribution = {}
 
-            # Obtén los datos de la cuenta y PIN
             account_consulted = Account.objects.get(id=request.POST.get('account_id'))
             card_pin_consulted = account_consulted.card_pin
             withdrawal_amount = float(request.POST.get('withdrawal_amount'))
@@ -175,7 +157,6 @@ def cash_withdrawal(request):
             }
             return render(request, 'ATM/index.html', context)
 
-
 def register_client(request):
     if request.method == 'POST':
         form = Client_Registration_Form(request.POST)
@@ -183,34 +164,14 @@ def register_client(request):
         if form.is_valid():
             try:
                 user = form.save()
-
-                if not Client.objects.filter(user=user).exists():
-                    Client.objects.create(user=user)
-
-                    log_to_binnacle("Failed Login", f"Client {request.POST.get('username')} This user does not exist.")
-                    print(f"Client created for user {user.username}")
-                else:
-                    print(f"Client created for user {user.username}")
-
-                clients = Client.objects.all()
-                return render(request, 'ATM/Office_User/dashboard.html', {'clients': clients, 'form': form})
+                Client.objects.create(user=user)
+                log_to_binnacle("Client Register", f"Client {user.username} This user does not exist.")
+                return redirect('index_clients')
 
             except Exception as e:
-                print(f"Error during registration: {e}")
-                form = Client_Registration_Form()
-                clients = Client.objects.all()
-                return render(request, 'ATM/Office_User/dashboard.html', {'clients': clients, 'form': form})
-
+                return redirect('index_clients')
         else:
-            print("Form is invalid")
-            print(form.errors)
-            clients = Client.objects.all()
-            return render(request, 'ATM/Office_User/dashboard.html', {'clients': clients, 'form': form})
-
-    else:
-        form = Client_Registration_Form()
-        return render(request, 'ATM/Office_User/index_admin.html', {'form': form})
-
+            return redirect('index_clients')
 
 def edit_client(request, user_id):
 
@@ -222,7 +183,7 @@ def edit_client(request, user_id):
             edit_form.save()
             client.name = edit_form.cleaned_data['name']
             client.save()
-            log_to_binnacle("Failed Login", f"Client {client.name} has been edit.")
+            log_to_binnacle("Failed Edit", f"Client {client.name} has been edit.")
             return render(request, 'ATM/Office_User/dashboard.html', {'edit_form': edit_form, 'user': user})
 
         else:
@@ -239,33 +200,24 @@ def delete_client(request, client_id):
 
     if request.method == 'POST':
             user = client.user
-            log_to_binnacle("Failed Login", f"Client {user.username} has been delete.")
+            log_to_binnacle("Delete Client", f"Client {user.username} has been delete.")
             client.delete()
             user.delete()
-            clients = Client.objects.all()
-            form = Client_Registration_Form()
-            return render(request, 'ATM/Office_User/dashboard.html',{'clients': clients, 'form':form})
-
-    else:
-        return render(request, 'ATM/Office_User/dashboard.html', {'message_delete': "Client Not Delete"})
+            return redirect('index_clients')
 
 
 #ACCOUNTS
 
 def create_account(request):
-    accounts = Account.objects.all()
+
     if request.method == 'POST':
         form_account = Account_Form(request.POST)
         if form_account.is_valid():
             form_account.save()
-            form = Client_Registration_Form()
-            log_to_binnacle("Failed Login", f"Client {accounts.client.name} has been delete.")
-            return render(request, 'ATM/accounts/index.html', {'message': "success acount", 'accounts': accounts, 'form':form})
-    else:
-        form_account = Account_Form()
-        form = Client_Registration_Form()
+            log_to_binnacle("Failed Login", f"Client {request.POST.get('client.')} has been delete.")
+            return redirect('index_accounts')
 
-    return render(request, 'ATM/accounts/index.html', {'form_account': form_account, 'accounts': accounts, 'form':form})
+        return redirect('index_accounts')
 
 
 def edit_account(request, account_id):
@@ -278,3 +230,12 @@ def edit_account(request, account_id):
     else:
         form_edit = Edit_Account_Form(instance=account)
     return render(request, 'ATM/accounts/index.html', {'form': form_edit, 'account_id': account_id})
+
+def delete_account(request, account_id):
+
+    account = get_object_or_404(Account, id=account_id)
+
+    if request.method == 'POST':
+            log_to_binnacle("Delete Account", f"Account the client {account.client.name} has been delete.")
+            account.delete()
+            return redirect('index_accounts')

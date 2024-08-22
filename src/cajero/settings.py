@@ -48,7 +48,7 @@ LOGGING = {
 
 ALLOWED_HOSTS = []
 
-LOGIN_URL = '/ATM/Office_User/index_admin/'
+LOGIN_URL = 'index_admin/'
 
 # Application definition
 
