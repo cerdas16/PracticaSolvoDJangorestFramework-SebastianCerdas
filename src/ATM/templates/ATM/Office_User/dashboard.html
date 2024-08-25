@@ -15,7 +15,6 @@
 
         <h1>Manage Registered Clients</h1>
 
-        {{ exist }}
 
         <button class="btn btn-success bt-xs float-end my-5" data-toggle="modal" data-target="#create_new_client">Register New Client</button>
 
@@ -66,30 +65,8 @@
                                   </div>
                                 </div>
 
-                            <button type="button" class="btn btn-warning text-white btn-xs" data-toggle="modal" data-target="#edit_client{{client.user.id}}">Edit</button>
-                            <!-- Modal Edit Client -->
-                                <div id="edit_client{{client.user.id}}" class="modal fade" tabindex="-1" role="dialog">
-                                  <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title">Título del Modal</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                          <span aria-hidden="true">&times;</span>
-                                        </button>
-                                      </div>
-                                        <form method="post" action="{% url 'edit_client' client.user.id %}" id="edit_client_form">
-                                          <div class="modal-body">
-                                              {% csrf_token %}
-                                              {{ edit_form }}
-                                          </div>
-                                        </form>
-                                      <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                        <button type="button" class="btn btn-primary">Guardar Cambios</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                            <a type="button" class="btn btn-warning text-white btn-xs" href="{%url 'edit_client' client.user.id %}">Edit</a>
+
 
                             <button type="button" class="btn btn-danger text-white btn-xs" data-toggle="modal" data-target="#delete_client{{client.user.id}}">Delete</button>
                             <!-- Modal Delete Client -->
