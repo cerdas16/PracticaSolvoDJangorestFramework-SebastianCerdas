@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from djgentelella.forms.forms import GTForm
 
-from .models import Client, Account
+from .models import Client, Account, Office_User
 from djgentelella.widgets import core as gentelella_widgets
 from django.core.exceptions import ValidationError
 
@@ -100,3 +100,43 @@ class Edit_Client_Form(forms.ModelForm, GTForm):
             client.user.username = self.cleaned_data['username']
             client.user.save()
         return client
+
+
+class Office_User_Registration_Form(GTForm, UserCreationForm):
+
+    class Meta:
+        model = User
+        fields = ['username', 'password1', 'password2']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+        return user
+
+class Edit_Office_User_Form(forms.ModelForm, GTForm):
+
+    username = forms.CharField(widget=gentelella_widgets.TextInput, max_length=150, required=True)
+
+    class Meta:
+        model = Office_User
+        fields = ['username']
+
+    def __init__(self, *args, **kwargs):
+        super(Edit_Office_User_Form, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.user:
+            self.fields['username'].initial = self.instance.user.username
+
+    def save(self, commit=True):
+        office_user = super(Edit_Office_User_Form, self).save(commit=False)
+        office_user.user.username = self.cleaned_data['username']
+        if commit:
+            office_user.user.save()
+            office_user.save()
+        return office_user
