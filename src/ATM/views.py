@@ -110,9 +110,8 @@ def verify_office_user(request):
 def cash_withdrawal(request):
     if request.method == 'POST':
         try:
-            # Montos excluidos
+
             excluded_amounts = {3000, 8000, 11000, 16000, 21000, 27000, 29000}
-            denominations = []
             bills_distribution = {}
 
             account_consulted = Account.objects.get(id=request.POST.get('account_id'))
@@ -218,7 +217,6 @@ def create_account(request):
             return redirect('index_accounts')
 
         return redirect('index_accounts')
-
 
 def edit_account(request, account_id):
     account = get_object_or_404(Account, id=account_id)
