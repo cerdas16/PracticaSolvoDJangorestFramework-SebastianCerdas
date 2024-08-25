@@ -10,7 +10,7 @@
 
     <div class="container">
 
-        <a class="btn btn_primary" href="{% url 'index_accounts' %}"><h1><i class="fa fa-arrow-circle-left" aria-hidden="true"></i></h1></a>
+        <a class="btn btn_primary" href="{% url 'index_office_users' %}"><h1><i class="fa fa-arrow-circle-left" aria-hidden="true"></i></h1></a>
 
         {{ exist }}
 
@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="card">
-                        <h1 class="text-center">Edit Account of {{account.client.name}}</h1>
+                        <h1 class="text-center">Edit Office User</h1>
                         <div class="card-body">
                             <h2>Validate credentials.</h2>
                             {{message}}

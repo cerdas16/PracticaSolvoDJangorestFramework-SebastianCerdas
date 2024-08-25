@@ -12,33 +12,31 @@
 
         <a class="btn btn-secondary" href="{% url 'index_accounts' %}">Manage Accounts</a>
         <a class="btn btn-secondary" href="{% url 'index_logs' %}">Logs</a>
-        <a class="btn btn-secondary" href="{% url 'index_office_users' %}">Manage Office Users</a>
+        <a class="btn btn-secondary" href="{% url 'index_clients' %}">Manage Clients</a>
 
-        <h1>Manage Registered Clients</h1>
+        <h1>Manage Registered Office Users</h1>
 
 
-        <button class="btn btn-success bt-xs float-end my-5" data-toggle="modal" data-target="#create_new_client">Register New Client</button>
+        <button class="btn btn-success bt-xs float-end my-5" data-toggle="modal" data-target="#create_new_office_user">Register New Office User</button>
 
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Username</th>
-                    <th>Name Client</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
 
-                {% for client in clients %}
+                {% for office_user in office_users %}
                     <tr>
-                        <td>{{client.user.id}}</td>
-                        <td>{{client.user.username}}</td>
-                        <td>{{client.name}}</td>
+                        <td>{{office_user.user.id}}</td>
+                        <td>{{office_user.user.username}}</td>
                         <td>
-                            <button type="button" class="btn btn-info text-white btn-xs" data-toggle="modal" data-target="#view_client{{client.user.id}}">View</button>
-                            <!-- Modal View Client -->
-                                <div id="view_client{{client.user.id}}" class="modal fade" tabindex="-1" role="dialog">
+                            <button type="button" class="btn btn-info text-white btn-xs" data-toggle="modal" data-target="#view_office_user{{office_user.user.id}}">View</button>
+                            <!-- Modal View Office_user -->
+                                <div id="view_office_user{{office_user.user.id}}" class="modal fade" tabindex="-1" role="dialog">
                                   <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                       <div class="modal-header">
@@ -49,13 +47,13 @@
                                       </div>
                                       <div class="modal-body">
                                           <form>
+                                              <div class="form-group">
+                                                <label>Id Office_User</label>
+                                                <input type="text" class="form-control" id="name" value="{{office_user.user.id}}" placeholder="Enter text" disabled>
+                                            </div>
                                             <div class="form-group">
                                                 <label>Username</label>
-                                                <input type="text" class="form-control" id="username" value="{{client.user.username}}" placeholder="Enter text"disabled>
-                                            </div>
-                                              <div class="form-group">
-                                                <label>Name Client</label>
-                                                <input type="text" class="form-control" id="name" value="{{client.name}}" placeholder="Enter text" disabled>
+                                                <input type="text" class="form-control" id="username" value="{{office_user.user.username}}" placeholder="Enter text"disabled>
                                             </div>
                                           </form>
                                       </div>
@@ -66,12 +64,12 @@
                                   </div>
                                 </div>
 
-                            <a type="button" class="btn btn-warning text-white btn-xs" href="{%url 'edit_client' client.user.id %}">Edit</a>
+                            <a type="button" class="btn btn-warning text-white btn-xs" href="{% url 'edit_office_user' office_user.user.id %}">Edit</a>
 
 
-                            <button type="button" class="btn btn-danger text-white btn-xs" data-toggle="modal" data-target="#delete_client{{client.user.id}}">Delete</button>
+                            <button type="button" class="btn btn-danger text-white btn-xs" data-toggle="modal" data-target="#delete_office_user{{office_user.user.id}}">Delete</button>
                             <!-- Modal Delete Client -->
-                                <div id="delete_client{{client.user.id}}" class="modal fade" tabindex="-1" role="dialog">
+                                <div id="delete_office_user{{office_user.user.id}}" class="modal fade" tabindex="-1" role="dialog">
                                   <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                       <div class="modal-header">
@@ -80,7 +78,7 @@
                                           <span aria-hidden="true">&times;</span>
                                         </button>
                                       </div>
-                                        <form method="post" action="{% url 'delete_client' client.id %}">
+                                        <form method="post" action="{% url 'delete_office_user' office_user.user.id %}">
                                             {% csrf_token %}
                                             <div class="modal-body">
                                                 <p>want to delete this client?</p>
@@ -106,7 +104,7 @@
     </div>
 
 <!-- Modal New Client -->
- <div id="create_new_client" class="modal fade" tabindex="-1" role="dialog">
+ <div id="create_new_office_user" class="modal fade" tabindex="-1" role="dialog">
      <div class="modal-dialog" role="document">
          <div class="modal-content">
              <div class="modal-header">
@@ -115,7 +113,7 @@
                      <span aria-hidden="true">&times;</span>
                  </button>
              </div>
-             <form method="post" action="{% url 'register_client' %}" id="client_form">
+             <form method="post" action="{% url 'create_office_user' %}" id="office_user_form">
                  <div class="modal-body">
                      {% csrf_token %}
                      {{ form }}
