@@ -48,7 +48,7 @@ class Custom_Authentication_Form(AuthenticationForm):
 class Delete_Confirmation_Form(forms.Form):
     confirm = forms.BooleanField(required=True, label="Confirmar eliminación")
 
-class Account_Form(forms.ModelForm):
+class Account_Form(forms.ModelForm, GTForm):
     class Meta:
         model = Account
         fields = ['client', 'bank_fund', 'card_pin']
@@ -64,7 +64,7 @@ class Account_Form(forms.ModelForm):
             })
         }
 
-class Edit_Account_Form(forms.ModelForm):
+class Edit_Account_Form(forms.ModelForm, GTForm):
     class Meta:
         model = Account
         fields = ['bank_fund', 'card_pin']
@@ -73,8 +73,30 @@ class Edit_Account_Form(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Enter bank fund amount'
             }),
-            'card_pin': gentelella_widgets.PasswordInput(attrs={
+            'card_pin': gentelella_widgets.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter 4-digit PIN'
             })
         }
+
+class Edit_Client_Form(forms.ModelForm, GTForm):
+
+    username = forms.CharField(widget=gentelella_widgets.TextInput, max_length=150, required=True)
+    name = forms.CharField(widget=gentelella_widgets.TextInput, max_length=255, required=True)
+
+    class Meta:
+        model = Client
+        fields = ['name', 'username']
+
+    def __init__(self, *args, **kwargs):
+        super(Edit_Client_Form, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.user:
+            self.fields['username'].initial = self.instance.user.username
+
+    def save(self, commit=True):
+        client = super(Edit_Client_Form, self).save(commit=False)
+        if commit:
+            client.save()
+            client.user.username = self.cleaned_data['username']
+            client.user.save()
+        return client

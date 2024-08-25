@@ -8,7 +8,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 
 from ATM.utils import log_to_binnacle
-from .forms import Client_Registration_Form, Custom_Authentication_Form, Account_Form, Edit_Account_Form
+from .forms import Client_Registration_Form, Custom_Authentication_Form, Account_Form, Edit_Account_Form, Edit_Client_Form
 from .models import Client, Account, Binnacle, Office_User
 
 logger = logging.getLogger(__name__)
@@ -78,7 +78,6 @@ def verify_user(request):
                 return render(request, 'ATM/withdraw.html', {'message': 'Welcome client, We were waiting for you!','account': accounts})
 
             else:
-
                 log_to_binnacle("Failed Login", f"Client {request.POST.get('username')} does not exist")
                 return render(request, 'ATM/index.html', {'message': 'Verify your credentials.'})
 
@@ -172,26 +171,18 @@ def register_client(request):
         else:
             return redirect('index_clients')
 
-def edit_client(request, user_id):
+def edit_client(request, id):
+    client = get_object_or_404(Client, user__id=id)
 
-    user = get_object_or_404(User, id=user_id)
-    client = get_object_or_404(Client, user=user)
     if request.method == 'POST':
-        edit_form = Client_Registration_Form(request.POST, instance=client)
-        if edit_form.is_valid():
-            edit_form.save()
-            client.name = edit_form.cleaned_data['name']
-            client.save()
-            log_to_binnacle("Failed Edit", f"Client {client.name} has been edit.")
-            return render(request, 'ATM/Office_User/dashboard.html', {'edit_form': edit_form, 'user': user})
-
-        else:
-            return render(request, 'ATM/Office_User/dashboard.html', {'edit_form': edit_form, 'user': user})
-
+        form = Edit_Client_Form(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            return redirect('index_clients')
     else:
-        edit_form = Client_Registration_Form(instance=client)
+        form = Edit_Client_Form(instance=client)
 
-    return render(request, 'ATM/Office_User/dashboard.html', {'edit_form': edit_form, 'user': user})
+    return render(request, 'ATM/Office_User/edit_client.html', {'form': form, 'client': client})
 
 def delete_client(request, client_id):
 
@@ -218,16 +209,19 @@ def create_account(request):
 
         return redirect('index_accounts')
 
-def edit_account(request, account_id):
-    account = get_object_or_404(Account, id=account_id)
+def edit_account(request, id):
+
+    account = get_object_or_404(Account, id=id)
+
     if request.method == 'POST':
-        form_edit = Edit_Account_Form(request.POST, instance=account)
-        if form_edit.is_valid():
-            form_edit.save()
-            return redirect('account_list')
+        form = Edit_Account_Form(request.POST, instance=account)
+        if form.is_valid():
+            form.save()
+            return redirect('index_accounts')
     else:
-        form_edit = Edit_Account_Form(instance=account)
-    return render(request, 'ATM/accounts/index.html', {'form': form_edit, 'account_id': account_id})
+        form = Edit_Account_Form(instance=account)
+
+    return render(request, 'ATM/accounts/edit_account.html', {'form': form, 'account': account})
 
 def delete_account(request, account_id):
 
