@@ -13,7 +13,7 @@ from .models import Client, Account, Binnacle, Office_User
 logger = logging.getLogger(__name__)
 # Create your views here.
 
-@permission_required('ATM.can_manage_clients')
+
 def index(request):
     form = Custom_Authentication_Form()
     if request.method == 'POST':
@@ -27,7 +27,7 @@ def index(request):
     else:
         return render(request, 'ATM/index.html', {'form': form})
 
-@permission_required('ATM.can_manage_clients')
+
 def index_admin(request):
     form = Custom_Authentication_Form()
     if request.method == 'POST':
@@ -74,7 +74,7 @@ def index_office_users(request):
 
     return render(request, 'ATM/Office_User/admin/index.html', {'office_users': office_users, 'form':form})
 
-@permission_required('ATM.can_manage_clients')
+
 def verify_user(request):
     if request.method == 'POST':
         try:
@@ -119,7 +119,7 @@ def verify_office_user(request):
         except Office_User.DoesNotExist:
             return redirect('index_admin')
 
-@permission_required('ATM.can_manage_clients')
+
 def cash_withdrawal(request):
     if request.method == 'POST':
         try:
